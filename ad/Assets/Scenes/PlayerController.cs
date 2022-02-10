@@ -6,8 +6,16 @@ public class PlayerController : MonoBehaviour
 {
     Rigidbody rb;
     public float speed;
+    public float JumpForce;
     private Vector2 inputs;
     public float rootSpeed;
+    public Transform JumpPoint;
+    public LayerMask WhatIsGround;
+    public float RadiusSphere;
+
+    public bool isGrounded;
+
+
 
 
 
@@ -23,6 +31,22 @@ public class PlayerController : MonoBehaviour
     {
         inputs.x = Input.GetAxis("Horizontal") * speed;
         inputs.y = Input.GetAxis("Vertical") * speed;
+        float y = rb.velocity.y;
+
+        isGrounded = Physics.CheckSphere(JumpPoint.position, RadiusSphere, WhatIsGround);
+
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            rb.velocity = new Vector3(rb.velocity.x, JumpForce, rb.velocity.z);
+
+
+        }
+
+
+
+
+
+
 
 
         Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
