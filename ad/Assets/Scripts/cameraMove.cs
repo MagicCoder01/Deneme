@@ -5,18 +5,31 @@ using UnityEngine;
 public class cameraMove : MonoBehaviour
 {
     public Transform player;
-    private Vector3 offeset;
+    
+
+    float x;
+    float y;
+    public float sent;
+    
+    
+    
     // Start is called before the first frame update
     void Start()
     {
-        offeset = transform.position - player.transform.position;
+        
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.position = player.transform.position + offeset;
+        x += Input.GetAxis("Mouse X")* sent;
+        y += -Input.GetAxis("Mouse Y") * sent;
+
+        y = Mathf.Clamp(y,-90,90);
+        transform.localRotation = Quaternion.Euler(y,0,0);
+      
+        player.transform.localRotation = Quaternion.Euler(0,x,0);
 
 
     }

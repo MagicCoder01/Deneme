@@ -4,61 +4,41 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    Rigidbody rb;
-    public float speed;
-    public float JumpForce;
-    private Vector2 inputs;
-    public float rootSpeed;
-    public Transform JumpPoint;
-    public LayerMask WhatIsGround;
-    public float RadiusSphere;
+    public Rigidbody rb;
+    public Transform _camera;
 
-    public bool isGrounded;
+    public float moveSpeed = 6f;
+    public float jumpForce = 10f;
 
+    public LayerMask Ground;
 
+    bool isGrounded;
 
-
-
-    // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
-
+        
     }
 
-    // Update is called once per frame
     void Update()
     {
-        inputs.x = Input.GetAxis("Horizontal") * speed;
-        inputs.y = Input.GetAxis("Vertical") * speed;
-        float y = rb.velocity.y;
+        //grounding
+        isGrounded = Physics.CheckSphere(new Vector3(transform.position.x, transform.position.y - 1, transform.position.z), 0.4f, Ground);
 
-        isGrounded = Physics.CheckSphere(JumpPoint.position, RadiusSphere, WhatIsGround);
 
+        //facing direction
+        Debug.DrawLine(_camera.position, transform.forward * 2.5f);
+
+        //moving
+        float x = Input.GetAxisRaw("Horizontal") * moveSpeed;
+        float y = Input.GetAxisRaw("Vertical") * moveSpeed;
+
+        //jumping
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
-        {
-            rb.velocity = new Vector3(rb.velocity.x, JumpForce, rb.velocity.z);
+            rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
 
+        //setting movement
+        Vector3 move = transform.right * x + transform.forward * y;
 
-        }
-
-
-
-
-
-
-
-
-        Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        bool isWalking = (Mathf.Abs(inputs.x) + Mathf.Abs(inputs.y)) > 0f;
-        if (isWalking)
-        {
-            rb.velocity = new Vector3(inputs.x, rb.velocity.y, inputs.y);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(direction), rootSpeed * Time.deltaTime);
-        }
-
-
-
-
+        rb.velocity = new Vector3(move.x, rb.velocity.y,move.z);
     }
 }
